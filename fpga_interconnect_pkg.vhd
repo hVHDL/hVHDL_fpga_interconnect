@@ -2,16 +2,19 @@ library ieee;
     use ieee.std_logic_1164.all;
     use ieee.numeric_std.all;
 
+    use work.fpga_interconnect_definitions.all;
+
 package fpga_interconnect_pkg is
 
     type fpga_interconnect_record is record
-        data                           : std_logic_vector(15 downto 0);
-        address                        : std_logic_vector(15 downto 0);
+        data                           : data_type;
+        address                        : address_type;
         data_write_is_requested_with_0 : std_logic;
         data_read_is_requested_with_0  : std_logic;
     end record;
 
     constant init_fpga_interconnect : fpga_interconnect_record := ((others => '1'), (others => '1'), '1', '1');
+    type bus_array is array (integer range <>) of fpga_interconnect_record;
 
 ------------------------------------------------------------------------
     function "and" ( left, right : fpga_interconnect_record)
@@ -53,6 +56,10 @@ package fpga_interconnect_pkg is
         signal bus_out : out fpga_interconnect_record ;
         address        : in integer                   ;
         data           : in integer);
+------------------------------------------------------------------------
+    procedure create_bus (
+        signal com_bus : out fpga_interconnect_record;
+        input_buses : in bus_array );
 ------------------------------------------------------------------------
 
 end package fpga_interconnect_pkg;
@@ -191,6 +198,21 @@ package body fpga_interconnect_pkg is
         end if;
         
     end connect_read_only_data_to_address;
+------------------------------------------------------------------------
+    procedure create_bus
+    (
+        signal com_bus : out fpga_interconnect_record;
+        input_buses : in bus_array 
+    ) is
+        variable combined_bus : fpga_interconnect_record := init_fpga_interconnect;
+    begin
+        for i in input_buses'range loop
+            combined_bus := combined_bus and input_buses(i);
+        end loop;
+
+        com_bus <= combined_bus;
+        
+    end create_bus;
 ------------------------------------------------------------------------
 
 

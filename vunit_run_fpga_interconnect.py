@@ -10,7 +10,9 @@ VU = VUnit.from_argv()
 
 lib = VU.add_library("lib");
 
-lib.add_source_files(ROOT / "fpga_interconnect_simulation" / "*.vhd")
+lib.add_source_files(ROOT / "interconnect_configuration" / "*.vhd")
 lib.add_source_files(ROOT / "*.vhd")
+lib.add_source_files(ROOT / "bus_controller" / "*.vhd")
+lib.add_source_files(ROOT / "fpga_interconnect_simulation" / "*.vhd")
 
 VU.main()
