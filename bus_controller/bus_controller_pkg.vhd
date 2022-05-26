@@ -6,13 +6,13 @@ library ieee;
 
 package bus_controller_pkg is
 ------------------------------------------------------------------------
-    type list_of_connection_states is (idle, wait_for_connection, connected, end_connection);
+    type list_of_connection_states is (idle, request_connection, wait_for_connection, connected, end_connection);
 
-    type list_of_actions is (idle, connect, transmit_data, end_connection);
+    type list_of_actions is (idle, request_connection, connect, transmit_data, end_connection);
 ------------------------------------------------------------------------
     type bus_controller_record is record
-        connection_states : list_of_connection_states;
-        i_requested_connection  : boolean;
+        connection_states      : list_of_connection_states;
+        i_requested_connection : boolean;
         bus_controller_is_done : boolean;
     end record;
 
@@ -50,21 +50,13 @@ package body bus_controller_pkg is
                     connection_state <= wait_for_connection;
                     i_requested_connection <= false;
                 end if;
+            WHEN request_connection =>
+                sent_actions <= request_connection;
 
             WHEN wait_for_connection =>
-                if received_actions = connect then
-                    connection_state <= connected;
-                end if;
-
-                if i_requested_connection then
-                    sent_actions <= connect;
-                end if;
 
             WHEN connected =>
-                sent_actions <= transmit_data;
-                if received_actions = idle then
-                    i_requested_connection <= false;
-                end if;
+
             WHEN end_connection =>
                 sent_actions <= idle;
                 connection_state <= idle;
@@ -79,7 +71,6 @@ package body bus_controller_pkg is
     ) is
     begin
         bus_controller_object.connection_states <= wait_for_connection;
-        bus_controller_object.i_requested_connection <= true;
          
     end request_connection;
 ------------------------------------------------------------------------
