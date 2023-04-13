@@ -33,7 +33,13 @@ package fpga_interconnect_pkg is
         address : integer)
     return boolean;
 ------------------------------------------------------------------------
+    function read_is_requested ( bus_in : fpga_interconnect_record)
+        return boolean;
+------------------------------------------------------------------------
     function get_data ( bus_in : fpga_interconnect_record)
+        return integer;
+
+    function get_address ( bus_in : fpga_interconnect_record)
         return integer;
 ------------------------------------------------------------------------
     procedure request_data_from_address (
@@ -61,7 +67,7 @@ package fpga_interconnect_pkg is
         signal com_bus : out fpga_interconnect_record;
         input_buses : in bus_array );
 ------------------------------------------------------------------------
-    function write_is_requested ( bus_in : fpga_interconnect_record)
+    function write_from_bus_is_requested ( bus_in : fpga_interconnect_record)
         return boolean;
 
 end package fpga_interconnect_pkg;
@@ -124,7 +130,7 @@ package body fpga_interconnect_pkg is
         bus_out.data_write_is_requested_with_0 <= '0';
     end write_data_to_address;
 ------------------------------------------------------------------------
-    function write_is_requested
+    function write_from_bus_is_requested
     (
         bus_in : fpga_interconnect_record
     )
@@ -133,7 +139,7 @@ package body fpga_interconnect_pkg is
     begin
         
         return bus_in.data_write_is_requested_with_0 = '0';
-    end write_is_requested;
+    end write_from_bus_is_requested;
 ------------------------------------------------------------------------
     function write_to_address_is_requested
     (
@@ -167,6 +173,16 @@ package body fpga_interconnect_pkg is
         bus_out.data_read_is_requested_with_0 <= '0';
         bus_out.address <= to_std_logic_vector(address);
     end request_data_from_address;
+------------------------------------------------------------------------
+    function read_is_requested
+    (
+        bus_in : fpga_interconnect_record
+    )
+    return boolean
+    is
+    begin
+        return bus_in.data_read_is_requested_with_0 = '1';
+    end read_is_requested;
 ------------------------------------------------------------------------
     function data_is_requested_from_address
     (
@@ -226,6 +242,17 @@ package body fpga_interconnect_pkg is
         com_bus <= combined_bus;
         
     end create_bus;
+------------------------------------------------------------------------
+    function get_address
+    (
+        bus_in : fpga_interconnect_record
+    )
+    return integer
+    is
+    begin
+        return to_integer(unsigned(bus_in.address));
+        
+    end get_address;
 ------------------------------------------------------------------------
 
 
