@@ -61,6 +61,8 @@ package fpga_interconnect_pkg is
         signal com_bus : out fpga_interconnect_record;
         input_buses : in bus_array );
 ------------------------------------------------------------------------
+    function write_is_requested ( bus_in : fpga_interconnect_record)
+        return boolean;
 
 end package fpga_interconnect_pkg;
 
@@ -121,6 +123,17 @@ package body fpga_interconnect_pkg is
         bus_out.data    <= to_std_logic_vector(data);
         bus_out.data_write_is_requested_with_0 <= '0';
     end write_data_to_address;
+------------------------------------------------------------------------
+    function write_is_requested
+    (
+        bus_in : fpga_interconnect_record
+    )
+    return boolean
+    is
+    begin
+        
+        return bus_in.data_write_is_requested_with_0 = '0';
+    end write_is_requested;
 ------------------------------------------------------------------------
     function write_to_address_is_requested
     (
