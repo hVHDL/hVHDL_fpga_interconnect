@@ -50,6 +50,12 @@ package fpga_interconnect_pkg is
         bus_in : fpga_interconnect_record;
         address : integer)
         return boolean;
+
+    function data_is_requested_from_address_range (
+        bus_in : in fpga_interconnect_record;
+        greater_or_equal_to : integer;
+        less_than : integer)
+    return boolean;
 ------------------------------------------------------------------------
     procedure connect_data_to_address (
         bus_in         : in fpga_interconnect_record  ;
@@ -201,6 +207,24 @@ package body fpga_interconnect_pkg is
         return bus_in.data_read_is_requested_with_0 = '0' and
             to_integer(bus_in.address) = address;
     end data_is_requested_from_address;
+
+    function data_is_requested_from_address_range
+    (
+        bus_in : in fpga_interconnect_record;
+        greater_or_equal_to : integer;
+        less_than : integer
+    )
+    return boolean
+    is
+        variable is_requested : boolean;
+    begin
+        is_requested := bus_in.data_read_is_requested_with_0 = '0';
+        is_requested := is_requested and get_address(bus_in) >= greater_or_equal_to;
+        is_requested := is_requested and get_address(bus_in) < less_than;
+
+        return is_requested;
+        
+    end data_is_requested_from_address_range;
 ------------------------------------------------------------------------
     procedure connect_data_to_address
     (
