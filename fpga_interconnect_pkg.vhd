@@ -27,6 +27,11 @@ package fpga_interconnect_pkg is
         signal bus_out : out fpga_interconnect_record;
         address : integer;
         data : integer);
+
+    procedure write_data_to_address (
+        signal bus_out : out fpga_interconnect_record;
+        address : integer;
+        data : std_logic_vector);
 ------------------------------------------------------------------------
     function write_to_address_is_requested (
         bus_in : fpga_interconnect_record;
@@ -147,6 +152,19 @@ package body fpga_interconnect_pkg is
         bus_out.data    <= to_std_logic_vector(data);
         bus_out.data_write_is_requested_with_0 <= '0';
     end write_data_to_address;
+
+    procedure write_data_to_address
+    (
+        signal bus_out : out fpga_interconnect_record;
+        address : integer;
+        data : std_logic_vector
+    ) is
+    begin
+        bus_out.address <= to_std_logic_vector(address);
+        bus_out.data    <= data;
+        bus_out.data_write_is_requested_with_0 <= '0';
+    end write_data_to_address;
+------------------------------------------------------------------------
 ------------------------------------------------------------------------
     function write_from_bus_is_requested
     (
