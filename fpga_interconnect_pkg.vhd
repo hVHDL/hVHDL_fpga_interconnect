@@ -73,6 +73,12 @@ package fpga_interconnect_pkg is
         signal bus_out : out fpga_interconnect_record ;
         address        : in integer                   ;
         signal data    : inout integer);
+
+    procedure connect_data_to_address (
+        bus_in         : in fpga_interconnect_record  ;
+        signal bus_out : out fpga_interconnect_record ;
+        address        : in integer                   ;
+        signal data    : inout std_logic_vector);
 ------------------------------------------------------------------------
     procedure connect_read_only_data_to_address (
         bus_in         : in fpga_interconnect_record  ;
@@ -284,6 +290,25 @@ package body fpga_interconnect_pkg is
         end if;
         
     end connect_data_to_address;
+
+    procedure connect_data_to_address
+    (
+        bus_in         : in fpga_interconnect_record  ;
+        signal bus_out : out fpga_interconnect_record ;
+        address        : in integer                   ;
+        signal data    : inout std_logic_vector
+    ) is
+    begin
+        if write_to_address_is_requested(bus_in, address) then
+            data <= bus_in.data;
+        end if;
+
+        if data_is_requested_from_address(bus_in, address) then
+            write_data_to_address(bus_out, 0, data);
+        end if;
+        
+    end connect_data_to_address;
+------------------------------------------------------------------------
 ------------------------------------------------------------------------
     procedure connect_read_only_data_to_address
     (
