@@ -62,6 +62,11 @@ package fpga_interconnect_pkg is
         less_than : integer)
     return boolean;
 
+    function write_is_requested_to_address (
+        bus_in : fpga_interconnect_record;
+        address : natural)
+    return boolean;
+
     function write_is_requested_to_address_range (
         bus_in : in fpga_interconnect_record;
         greater_or_equal_to : integer;
@@ -365,6 +370,18 @@ package body fpga_interconnect_pkg is
         
     end get_address;
 ------------------------------------------------------------------------
+    function write_is_requested_to_address
+    (
+        bus_in : fpga_interconnect_record;
+        address : natural
+    )
+    return boolean
+    is
+    begin
+        return (bus_in.data_write_is_requested_with_0 = '0') and 
+               (get_address(bus_in) = address);
 
+    end write_is_requested_to_address;
+------------------------------------------------------------------------
 
 end package body fpga_interconnect_pkg;
