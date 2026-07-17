@@ -247,7 +247,7 @@ package body fpga_interconnect_generic_pkg is
     return boolean
     is
     begin
-        return bus_in.data_read_is_requested_with_0 = '1';
+        return bus_in.data_read_is_requested_with_0 = '0';
     end read_is_requested;
 ------------------------------------------------------------------------
     function data_is_requested_from_address
